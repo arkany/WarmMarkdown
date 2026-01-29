@@ -1,0 +1,487 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10001 /* WarmMarkdownApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10001; };
+		A10002 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10002; };
+		A10003 /* TextViewWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10003; };
+		A10004 /* MarkdownEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10004; };
+		A10005 /* MarkdownFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10005; };
+		A10006 /* MarkdownParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10006; };
+		A10007 /* VSCodeTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10007; };
+		A10008 /* MarkdownTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10008; };
+		A10009 /* ThemeMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10009; };
+		A10010 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10010; };
+		A10011 /* TaskState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10011; };
+		A10012 /* TaskCheckboxAttachment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10012; };
+		A10013 /* TaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10013; };
+		A10014 /* FileManagerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10014; };
+		A10015 /* NoteDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10015; };
+		A10016 /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10016; };
+		A10017 /* QuickSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10017; };
+		A10018 /* SearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10018; };
+		A10019 /* WikiLinkParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10019; };
+		A10020 /* warm-oatmeal.json in Resources */ = {isa = PBXBuildFile; fileRef = B10020; };
+		A10021 /* dracula.json in Resources */ = {isa = PBXBuildFile; fileRef = B10021; };
+		A10022 /* nord.json in Resources */ = {isa = PBXBuildFile; fileRef = B10022; };
+		A10023 /* gruvbox-warm.json in Resources */ = {isa = PBXBuildFile; fileRef = B10023; };
+		A10024 /* one-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = B10024; };
+		A10030 /* Markdown in Frameworks */ = {isa = PBXBuildFile; productRef = D10001; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B10001 /* WarmMarkdownApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarmMarkdownApp.swift; sourceTree = "<group>"; };
+		B10002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B10003 /* TextViewWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewWrapper.swift; sourceTree = "<group>"; };
+		B10004 /* MarkdownEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownEditorView.swift; sourceTree = "<group>"; };
+		B10005 /* MarkdownFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownFormatter.swift; sourceTree = "<group>"; };
+		B10006 /* MarkdownParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownParser.swift; sourceTree = "<group>"; };
+		B10007 /* VSCodeTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VSCodeTheme.swift; sourceTree = "<group>"; };
+		B10008 /* MarkdownTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownTheme.swift; sourceTree = "<group>"; };
+		B10009 /* ThemeMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeMapper.swift; sourceTree = "<group>"; };
+		B10010 /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		B10011 /* TaskState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskState.swift; sourceTree = "<group>"; };
+		B10012 /* TaskCheckboxAttachment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCheckboxAttachment.swift; sourceTree = "<group>"; };
+		B10013 /* TaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskManager.swift; sourceTree = "<group>"; };
+		B10014 /* FileManagerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagerService.swift; sourceTree = "<group>"; };
+		B10015 /* NoteDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDocument.swift; sourceTree = "<group>"; };
+		B10016 /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		B10017 /* QuickSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickSwitcher.swift; sourceTree = "<group>"; };
+		B10018 /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
+		B10019 /* WikiLinkParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikiLinkParser.swift; sourceTree = "<group>"; };
+		B10020 /* warm-oatmeal.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "warm-oatmeal.json"; sourceTree = "<group>"; };
+		B10021 /* dracula.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = dracula.json; sourceTree = "<group>"; };
+		B10022 /* nord.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = nord.json; sourceTree = "<group>"; };
+		B10023 /* gruvbox-warm.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "gruvbox-warm.json"; sourceTree = "<group>"; };
+		B10024 /* one-dark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "one-dark.json"; sourceTree = "<group>"; };
+		B10025 /* WarmMarkdown.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WarmMarkdown.entitlements; sourceTree = "<group>"; };
+		B10099 /* WarmMarkdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WarmMarkdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C10001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10030 /* Markdown in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		G10000 /* Root */ = {
+			isa = PBXGroup;
+			children = (
+				G10001 /* WarmMarkdown */,
+				G10099 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		G10001 /* WarmMarkdown */ = {
+			isa = PBXGroup;
+			children = (
+				B10001 /* WarmMarkdownApp.swift */,
+				B10002 /* ContentView.swift */,
+				B10025 /* WarmMarkdown.entitlements */,
+				G10002 /* Editor */,
+				G10003 /* Themes */,
+				G10004 /* Tasks */,
+				G10005 /* Files */,
+				G10006 /* Resources */,
+			);
+			path = WarmMarkdown;
+			sourceTree = "<group>";
+		};
+		G10002 /* Editor */ = {
+			isa = PBXGroup;
+			children = (
+				B10003 /* TextViewWrapper.swift */,
+				B10004 /* MarkdownEditorView.swift */,
+				B10005 /* MarkdownFormatter.swift */,
+				B10006 /* MarkdownParser.swift */,
+			);
+			path = Editor;
+			sourceTree = "<group>";
+		};
+		G10003 /* Themes */ = {
+			isa = PBXGroup;
+			children = (
+				B10007 /* VSCodeTheme.swift */,
+				B10008 /* MarkdownTheme.swift */,
+				B10009 /* ThemeMapper.swift */,
+				B10010 /* ThemeManager.swift */,
+			);
+			path = Themes;
+			sourceTree = "<group>";
+		};
+		G10004 /* Tasks */ = {
+			isa = PBXGroup;
+			children = (
+				B10011 /* TaskState.swift */,
+				B10012 /* TaskCheckboxAttachment.swift */,
+				B10013 /* TaskManager.swift */,
+			);
+			path = Tasks;
+			sourceTree = "<group>";
+		};
+		G10005 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				B10014 /* FileManagerService.swift */,
+				B10015 /* NoteDocument.swift */,
+				B10016 /* SidebarView.swift */,
+				B10017 /* QuickSwitcher.swift */,
+				B10018 /* SearchService.swift */,
+				B10019 /* WikiLinkParser.swift */,
+			);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		G10006 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				G10007 /* Themes */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		G10007 /* Themes */ = {
+			isa = PBXGroup;
+			children = (
+				B10020 /* warm-oatmeal.json */,
+				B10021 /* dracula.json */,
+				B10022 /* nord.json */,
+				B10023 /* gruvbox-warm.json */,
+				B10024 /* one-dark.json */,
+			);
+			path = Themes;
+			sourceTree = "<group>";
+		};
+		G10099 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B10099 /* WarmMarkdown.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		T10001 /* WarmMarkdown */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = X10003 /* Build configuration list for PBXNativeTarget "WarmMarkdown" */;
+			buildPhases = (
+				S10001 /* Sources */,
+				C10001 /* Frameworks */,
+				R10001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WarmMarkdown;
+			packageProductDependencies = (
+				D10001 /* Markdown */,
+			);
+			productName = WarmMarkdown;
+			productReference = B10099 /* WarmMarkdown.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		P10001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					T10001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = X10001 /* Build configuration list for PBXProject "WarmMarkdown" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = G10000;
+			packageReferences = (
+				E10001 /* XCRemoteSwiftPackageReference "swift-markdown" */,
+			);
+			productRefGroup = G10099 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				T10001 /* WarmMarkdown */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		R10001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10020 /* warm-oatmeal.json in Resources */,
+				A10021 /* dracula.json in Resources */,
+				A10022 /* nord.json in Resources */,
+				A10023 /* gruvbox-warm.json in Resources */,
+				A10024 /* one-dark.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		S10001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10001 /* WarmMarkdownApp.swift in Sources */,
+				A10002 /* ContentView.swift in Sources */,
+				A10003 /* TextViewWrapper.swift in Sources */,
+				A10004 /* MarkdownEditorView.swift in Sources */,
+				A10005 /* MarkdownFormatter.swift in Sources */,
+				A10006 /* MarkdownParser.swift in Sources */,
+				A10007 /* VSCodeTheme.swift in Sources */,
+				A10008 /* MarkdownTheme.swift in Sources */,
+				A10009 /* ThemeMapper.swift in Sources */,
+				A10010 /* ThemeManager.swift in Sources */,
+				A10011 /* TaskState.swift in Sources */,
+				A10012 /* TaskCheckboxAttachment.swift in Sources */,
+				A10013 /* TaskManager.swift in Sources */,
+				A10014 /* FileManagerService.swift in Sources */,
+				A10015 /* NoteDocument.swift in Sources */,
+				A10016 /* SidebarView.swift in Sources */,
+				A10017 /* QuickSwitcher.swift in Sources */,
+				A10018 /* SearchService.swift in Sources */,
+				A10019 /* WikiLinkParser.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		X10D01 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		X10R01 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		X10D02 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = WarmMarkdown/WarmMarkdown.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.warmmarkdown.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		X10R02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = WarmMarkdown/WarmMarkdown.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.warmmarkdown.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		X10001 /* Build configuration list for PBXProject "WarmMarkdown" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				X10D01 /* Debug */,
+				X10R01 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		X10003 /* Build configuration list for PBXNativeTarget "WarmMarkdown" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				X10D02 /* Debug */,
+				X10R02 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E10001 /* XCRemoteSwiftPackageReference "swift-markdown" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-markdown.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D10001 /* Markdown */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E10001 /* XCRemoteSwiftPackageReference "swift-markdown" */;
+			productName = Markdown;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = P10001 /* Project object */;
+}

@@ -1,0 +1,87 @@
+{
+  "name": "Warm Oatmeal",
+  "type": "light",
+  "colors": {
+    "editor.background": "#FAF6F0",
+    "editor.foreground": "#3C3836",
+    "editor.selectionBackground": "#D5CCB4",
+    "editor.lineHighlightBackground": "#F0EBE3",
+    "editorIndentGuide.activeBackground": "#D5CCB4"
+  },
+  "tokenColors": [
+    {
+      "name": "Keyword",
+      "scope": "keyword",
+      "settings": {
+        "foreground": "#9D4E3A"
+      }
+    },
+    {
+      "name": "String",
+      "scope": "string",
+      "settings": {
+        "foreground": "#6A8B6D"
+      }
+    },
+    {
+      "name": "Comment",
+      "scope": "comment",
+      "settings": {
+        "foreground": "#A89984",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Variable",
+      "scope": "variable",
+      "settings": {
+        "foreground": "#5C5350"
+      }
+    },
+    {
+      "name": "Keyword Operator",
+      "scope": "keyword.operator",
+      "settings": {
+        "foreground": "#9D4E3A"
+      }
+    },
+    {
+      "name": "Markup Heading",
+      "scope": "markup.heading",
+      "settings": {
+        "foreground": "#9D4E3A",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Markup Bold",
+      "scope": "markup.bold",
+      "settings": {
+        "foreground": "#3C3836",
+        "fontStyle": "bold"
+      }
+    },
+    {
+      "name": "Markup Italic",
+      "scope": "markup.italic",
+      "settings": {
+        "foreground": "#5C5350",
+        "fontStyle": "italic"
+      }
+    },
+    {
+      "name": "Markup Link",
+      "scope": "markup.underline.link",
+      "settings": {
+        "foreground": "#6A8B6D"
+      }
+    },
+    {
+      "name": "String Quoted",
+      "scope": "string.quoted",
+      "settings": {
+        "foreground": "#7C6F64"
+      }
+    }
+  ]
+}
