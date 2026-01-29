@@ -6,7 +6,7 @@ final class MarkdownFormatter {
     let theme: MarkdownTheme
     private let parser = MarkdownParser()
 
-    // Fonts
+    // Fonts — serif body to match reference design
     private let bodyFont: NSFont
     private let monoFont: NSFont
     private let boldFont: NSFont
@@ -16,28 +16,35 @@ final class MarkdownFormatter {
     init(theme: MarkdownTheme) {
         self.theme = theme
 
-        let size: CGFloat = 15
-        self.bodyFont = NSFont.systemFont(ofSize: size)
-        self.monoFont = NSFont.monospacedSystemFont(ofSize: size - 1, weight: .regular)
-        self.boldFont = NSFont.boldSystemFont(ofSize: size)
-        self.italicFont = {
-            let descriptor = NSFont.systemFont(ofSize: size).fontDescriptor.withSymbolicTraits(.italic)
-            return NSFont(descriptor: descriptor, size: size) ?? NSFont.systemFont(ofSize: size)
+        let size: CGFloat = 16
+
+        // Use a serif font for body (matching Newsreader from reference)
+        let serifFont = NSFont(name: "Georgia", size: size) ?? NSFont.systemFont(ofSize: size)
+        let serifBold = NSFont(name: "Georgia-Bold", size: size) ?? NSFont.boldSystemFont(ofSize: size)
+        let serifItalic = NSFont(name: "Georgia-Italic", size: size) ?? {
+            let descriptor = serifFont.fontDescriptor.withSymbolicTraits(.italic)
+            return NSFont(descriptor: descriptor, size: size) ?? serifFont
         }()
-        self.boldItalicFont = {
-            let descriptor = NSFont.boldSystemFont(ofSize: size).fontDescriptor.withSymbolicTraits(.italic)
-            return NSFont(descriptor: descriptor, size: size) ?? NSFont.boldSystemFont(ofSize: size)
+        let serifBoldItalic = NSFont(name: "Georgia-BoldItalic", size: size) ?? {
+            let descriptor = serifBold.fontDescriptor.withSymbolicTraits(.italic)
+            return NSFont(descriptor: descriptor, size: size) ?? serifBold
         }()
+
+        self.bodyFont = serifFont
+        self.monoFont = NSFont.monospacedSystemFont(ofSize: size - 2, weight: .regular)
+        self.boldFont = serifBold
+        self.italicFont = serifItalic
+        self.boldItalicFont = serifBoldItalic
     }
 
     func format(textStorage: NSTextStorage, text: String) {
         let fullRange = NSRange(location: 0, length: textStorage.length)
         guard fullRange.length > 0 else { return }
 
-        // Reset to base style
+        // Reset to base style — generous line spacing matching reference's leading-loose
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 4
-        paragraphStyle.paragraphSpacing = 8
+        paragraphStyle.lineSpacing = 8
+        paragraphStyle.paragraphSpacing = 12
 
         let baseAttributes: [NSAttributedString.Key: Any] = [
             .font: bodyFont,
@@ -57,23 +64,26 @@ final class MarkdownFormatter {
             switch token.type {
             case .heading(let level):
                 let fontSize: CGFloat = switch level {
-                case 1: 28
-                case 2: 24
-                case 3: 20
+                case 1: 36
+                case 2: 28
+                case 3: 22
                 case 4: 18
                 case 5: 16
                 default: 15
                 }
-                let font = NSFont.systemFont(ofSize: fontSize, weight: .bold)
+                // Use serif font for headings to match reference
+                let headingFont = NSFont(name: "Georgia-Bold", size: fontSize)
+                    ?? NSFont.systemFont(ofSize: fontSize, weight: .bold)
                 let headingParagraph = NSMutableParagraphStyle()
                 headingParagraph.lineSpacing = 4
-                headingParagraph.paragraphSpacingBefore = level == 1 ? 16 : 12
-                headingParagraph.paragraphSpacing = 8
+                headingParagraph.paragraphSpacingBefore = level == 1 ? 20 : 14
+                headingParagraph.paragraphSpacing = 10
 
                 textStorage.addAttributes([
-                    .font: font,
+                    .font: headingFont,
                     .foregroundColor: theme.headingColor,
                     .paragraphStyle: headingParagraph,
+                    .kern: -0.5,
                 ], range: token.range)
 
             case .headingMarker:

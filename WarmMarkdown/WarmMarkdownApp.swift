@@ -12,7 +12,7 @@ struct WarmMarkdownApp: App {
         }
         .windowStyle(.titleBar)
         .windowToolbarStyle(.unified(showsTitle: true))
-        .defaultSize(width: 1100, height: 750)
+        .defaultSize(width: 1320, height: 800)
         .commands {
             CommandGroup(replacing: .newItem) {
                 Button("New Note") {

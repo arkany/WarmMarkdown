@@ -26,7 +26,7 @@ struct TextViewWrapper: NSViewRepresentable {
         textView.isAutomaticSpellingCorrectionEnabled = false
         textView.usesFindPanel = true
         textView.isIncrementalSearchingEnabled = true
-        textView.textContainerInset = NSSize(width: 40, height: 30)
+        textView.textContainerInset = NSSize(width: 60, height: 36)
         textView.isHorizontallyResizable = false
         textView.textContainer?.widthTracksTextView = true
         textView.textContainer?.lineFragmentPadding = 0
@@ -58,7 +58,7 @@ struct TextViewWrapper: NSViewRepresentable {
 
         textView.backgroundColor = formatter.theme.background
         scrollView.backgroundColor = formatter.theme.background
-        textView.insertionPointColor = formatter.theme.foreground
+        textView.insertionPointColor = formatter.theme.accentColor
     }
 
     class Coordinator: NSObject, NSTextViewDelegate, NSTextStorageDelegate {

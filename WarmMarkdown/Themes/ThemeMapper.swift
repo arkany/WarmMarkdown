@@ -53,6 +53,11 @@ enum ThemeMapper {
         let listMarker = vscodeTheme.colorForScope("keyword.operator")
             ?? heading
 
+        // Derive UI chrome colors from the base theme
+        let sidebarBg = isDark ? adjustAlpha(fg, alpha: 0.05, on: bg) : adjustAlpha("#000000", alpha: 0.03, on: bg)
+        let sidebarBorderHex = isDark ? adjustAlpha(fg, alpha: 0.1, on: bg) : adjustAlpha("#000000", alpha: 0.08, on: bg)
+        let accentHex = heading
+
         return MarkdownTheme(
             id: id,
             name: name,
@@ -68,7 +73,27 @@ enum ThemeMapper {
             emphasisColor: NSColor(hex: emphasis),
             blockquoteBorder: NSColor(hex: blockquoteBorder),
             listMarkerColor: NSColor(hex: listMarker),
-            isDark: isDark
+            isDark: isDark,
+            sidebarBackground: NSColor(hex: sidebarBg),
+            sidebarBorder: NSColor(hex: sidebarBorderHex),
+            sidebarItemActive: NSColor(hex: sidebarBorderHex),
+            sidebarItemHover: NSColor(hex: sidebarBg),
+            sidebarTextPrimary: NSColor(hex: fg),
+            sidebarTextSecondary: NSColor(hex: emphasis),
+            sidebarTextMuted: NSColor(hex: comment),
+            accentColor: NSColor(hex: accentHex),
+            toolbarDivider: NSColor(hex: sidebarBorderHex),
+            aiPaneBackground: isDark ? NSColor(hex: bg) : .white,
+            aiPaneBorder: NSColor(hex: sidebarBorderHex),
+            aiBubbleBackground: NSColor(hex: codeBg),
+            userBubbleBackground: isDark ? NSColor(hex: bg) : .white,
+            inputBorder: NSColor(hex: sidebarBorderHex),
+            floatingToolbarBackground: isDark ? NSColor(hex: "#F9F7F1") : NSColor(hex: "#2A2A2A"),
+            searchBackground: NSColor(hex: sidebarBg),
+            searchFocusBackground: NSColor(hex: bg),
+            searchFocusBorder: NSColor(hex: sidebarBorderHex),
+            tagTextColor: NSColor(hex: emphasis),
+            tagHashColor: NSColor(hex: comment)
         )
     }
 

@@ -31,6 +31,9 @@
 		A10022 /* nord.json in Resources */ = {isa = PBXBuildFile; fileRef = B10022; };
 		A10023 /* gruvbox-warm.json in Resources */ = {isa = PBXBuildFile; fileRef = B10023; };
 		A10024 /* one-dark.json in Resources */ = {isa = PBXBuildFile; fileRef = B10024; };
+		A10025 /* AIAssistantPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10026; };
+		A10026 /* FloatingToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10027; };
+		A10027 /* EditorToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10028; };
 		A10030 /* Markdown in Frameworks */ = {isa = PBXBuildFile; productRef = D10001; };
 /* End PBXBuildFile section */
 
@@ -60,6 +63,9 @@
 		B10023 /* gruvbox-warm.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "gruvbox-warm.json"; sourceTree = "<group>"; };
 		B10024 /* one-dark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "one-dark.json"; sourceTree = "<group>"; };
 		B10025 /* WarmMarkdown.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WarmMarkdown.entitlements; sourceTree = "<group>"; };
+		B10026 /* AIAssistantPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantPane.swift; sourceTree = "<group>"; };
+		B10027 /* FloatingToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingToolbar.swift; sourceTree = "<group>"; };
+		B10028 /* EditorToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorToolbar.swift; sourceTree = "<group>"; };
 		B10099 /* WarmMarkdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WarmMarkdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -105,6 +111,9 @@
 				B10004 /* MarkdownEditorView.swift */,
 				B10005 /* MarkdownFormatter.swift */,
 				B10006 /* MarkdownParser.swift */,
+				B10026 /* AIAssistantPane.swift */,
+				B10027 /* FloatingToolbar.swift */,
+				B10028 /* EditorToolbar.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -269,6 +278,9 @@
 				A10017 /* QuickSwitcher.swift in Sources */,
 				A10018 /* SearchService.swift in Sources */,
 				A10019 /* WikiLinkParser.swift in Sources */,
+				A10025 /* AIAssistantPane.swift in Sources */,
+				A10026 /* FloatingToolbar.swift in Sources */,
+				A10027 /* EditorToolbar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
