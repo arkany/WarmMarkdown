@@ -55,6 +55,7 @@ final class AppState {
     var selectedNote: NoteDocument?
     var showQuickSwitcher = false
     var sidebarVisible = true
+    var activeTag: String? = nil
 
     init() {
         fileManager.loadNotes()

@@ -118,6 +118,15 @@ struct ContentView: View {
                 }
             }
 
+            ToolbarItem(placement: .status) {
+                if let note = state.selectedNote {
+                    Text(wordCountLabel(for: note.content))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .monospacedDigit()
+                }
+            }
+
             ToolbarItem(placement: .primaryAction) {
                 Menu {
                     ForEach(appState.themeManager.availableThemes) { themeOption in
@@ -147,6 +156,13 @@ struct ContentView: View {
             }
         }
     }
+}
+
+private func wordCountLabel(for content: String) -> String {
+    let words = content.components(separatedBy: .whitespacesAndNewlines)
+        .filter { !$0.isEmpty }
+    let chars = content.count
+    return "\(words.count) words · \(chars) chars"
 }
 
 struct QuickSwitcherOverlay: View {

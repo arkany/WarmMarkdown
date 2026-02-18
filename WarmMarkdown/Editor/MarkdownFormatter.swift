@@ -194,8 +194,10 @@ final class MarkdownFormatter {
                 ], range: token.range)
 
             case .image:
+                // Style the entire ![alt](url) as a link-coloured image reference
                 textStorage.addAttributes([
                     .foregroundColor: theme.linkColor,
+                    .font: NSFont.systemFont(ofSize: 14, weight: .regular),
                 ], range: token.range)
 
             case .blockquote:

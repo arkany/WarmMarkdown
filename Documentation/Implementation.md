@@ -139,6 +139,55 @@ WarmMarkdown/
 | Cmd+\ | Toggle Sidebar |
 | Cmd+Shift+T | Toggle Task State |
 
+## Keyboard Shortcuts — Additional
+| Shortcut | Action |
+|---|---|
+| Cmd+Shift+W | Toggle word count |
+
+## Phase 6: WYSIWYG Improvements
+
+All five core phases are complete. The following improvements bring the editor closer to Bear's WYSIWYG feel.
+
+### 6a. Inline Image Rendering (WYSIWYG)
+- **Parser**: Add `![alt](url)` regex in `MarkdownParser` (the `image` token case exists but no regex is defined yet)
+- **Formatter**: Style `![` and `](url)` markers as faded (25% alpha), display a `photo` SF Symbol attachment before the alt text
+- **Local images**: For `file://` URLs, load `NSImage` and insert an `NSTextAttachment` on the **next line** as a read-only decoration paragraph, keeping raw markdown intact
+- **Remote images**: Show a `photo.badge.arrow.down` placeholder attachment (async load)
+- **Architecture note**: True inline insertion requires either a custom `NSTextStorage` subclass or TextKit 2 migration. Phase 6a uses the "decoration paragraph" approach (image appended below the markdown line) to avoid corrupting the stored string
+
+### 6b. Task Checkbox Attachments
+- `TaskCheckboxAttachment.swift` is complete but **never wired into the formatter**
+- Formatter should replace the `[ ]`/`[x]`/`[/]`/`[-]` bracket region with an `NSTextAttachment` using the custom-drawn checkbox
+- Replacement must happen right-to-left (to preserve offsets) and the raw markdown string must be reconstructed before save by stripping `NSAttachmentCharacter` (U+FFFC) back to bracket notation
+- **Simpler alternative** (implemented in Phase 6b): keep the raw text but overlay a custom `NSTextField`-free drawing by subclassing `NSTextView` and overriding `draw(_:)` to paint checkbox icons at task-marker rects
+
+### 6c. Word Count in Toolbar
+- Add word/character count to the toolbar or status bar below the editor
+- Update count on each text change (debounced 300ms)
+- Show: `N words · M chars`
+
+### 6d. Tag-Click Note Filtering
+- Clicking a tag in the sidebar's "Tags" section filters the notes list to only notes containing that tag
+- Active tag shown with an accent badge; clicking again deselects
+- Combine with free-text search (AND logic)
+
+### 6e. Note Statistics in Sidebar
+- `NoteRow` gains a task-progress indicator when note contains tasks: e.g. `✓ 3/5` using colored dots matching the four task-state colors
+- On hover/expansion, show word count
+
+### 6f. Export
+- **Cmd+Shift+E** opens export sheet: Markdown (copy as-is), HTML (via simple template), PDF (via `NSPrintOperation`)
+- HTML export wraps content in a minimal stylesheet matching the current theme colors
+
+### 6g. Drag & Drop Images
+- Accept image drag onto editor pane
+- Copy image to `<notes-dir>/assets/<note-slug>/` and insert `![filename](assets/...)` markdown
+- Entitlements already allow user-selected file access
+
+### 6h. Scroll Position Memory
+- Persist the vertical scroll offset per note (keyed by note ID in UserDefaults)
+- Restore when switching notes
+
 ## Dependencies
 - **swift-markdown** (Apple) v0.4.0+ - Markdown parsing via SPM
 - macOS 14.0+ deployment target
