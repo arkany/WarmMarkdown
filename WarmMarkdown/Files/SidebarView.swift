@@ -69,22 +69,44 @@ struct SidebarView: View {
                     .fill(Color(theme.searchBackground))
             )
             .padding(.horizontal, 14)
-            .padding(.bottom, 12)
+            .padding(.bottom, state.activeTag != nil ? 6 : 12)
             .opacity(appeared ? 1 : 0)
             .offset(x: appeared ? 0 : -20)
             .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.1), value: appeared)
+
+            // Active tag filter chip
+            if let activeTag = state.activeTag {
+                HStack(spacing: 4) {
+                    Image(systemName: "number")
+                        .font(.caption2)
+                    Text(activeTag)
+                        .font(.caption)
+                    Button {
+                        state.activeTag = nil
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.caption2)
+                    }
+                    .buttonStyle(.plain)
+                    Spacer()
+                }
+                .padding(.horizontal, 14)
+                .padding(.bottom, 10)
+                .foregroundStyle(Color(theme.accentColor))
+            }
 
             // Navigation
             VStack(spacing: 2) {
                 SidebarNavItem(
                     icon: "doc.text",
                     label: "All Notes",
-                    count: appState.fileManager.notes.count,
+                    count: filteredNotes.count,
                     isActive: true,
                     accentColor: Color(theme.accentColor),
                     theme: theme
                 ) {
                     searchText = ""
+                    state.activeTag = nil
                 }
                 .opacity(appeared ? 1 : 0)
                 .offset(x: appeared ? 0 : -20)
@@ -128,16 +150,17 @@ struct SidebarView: View {
                     ForEach(allTags, id: \.self) { tag in
                         HStack(spacing: 6) {
                             Text("#")
-                                .foregroundStyle(Color(theme.tagHashColor))
+                                .foregroundStyle(state.activeTag == tag ? Color(theme.accentColor) : Color(theme.tagHashColor))
                             Text(tag)
+                                .fontWeight(state.activeTag == tag ? .semibold : .regular)
                         }
                         .font(.system(size: 13))
-                        .foregroundStyle(Color(theme.tagTextColor))
+                        .foregroundStyle(state.activeTag == tag ? Color(theme.accentColor) : Color(theme.tagTextColor))
                         .padding(.vertical, 4)
                         .padding(.horizontal, 12)
                         .contentShape(Rectangle())
                         .onTapGesture {
-                            searchText = "#\(tag)"
+                            state.activeTag = (state.activeTag == tag) ? nil : tag
                         }
                     }
                 }
@@ -149,8 +172,8 @@ struct SidebarView: View {
 
             Spacer()
 
-            // Notes list when searching
-            if !searchText.isEmpty {
+            // Notes list when searching or filtering by tag
+            if !searchText.isEmpty || state.activeTag != nil {
                 ScrollView {
                     LazyVStack(spacing: 2) {
                         ForEach(filteredNotes) { note in
@@ -194,9 +217,15 @@ struct SidebarView: View {
                     Text(NSFullUserName().components(separatedBy: " ").first ?? "User")
                         .font(.system(size: 11, weight: .semibold))
                         .foregroundStyle(Color(theme.sidebarTextPrimary))
-                    Text("\(appState.fileManager.notes.count) notes")
-                        .font(.system(size: 10))
-                        .foregroundStyle(Color(theme.sidebarTextMuted))
+                    Group {
+                        if state.activeTag != nil {
+                            Text("\(filteredNotes.count)/\(appState.fileManager.notes.count) notes")
+                        } else {
+                            Text("\(appState.fileManager.notes.count) notes")
+                        }
+                    }
+                    .font(.system(size: 10))
+                    .foregroundStyle(Color(theme.sidebarTextMuted))
                 }
 
                 Spacer()
@@ -235,10 +264,18 @@ struct SidebarView: View {
     }
 
     private var filteredNotes: [NoteDocument] {
-        if searchText.isEmpty {
-            return appState.fileManager.notes
+        var notes = appState.fileManager.notes
+
+        // Apply tag filter first
+        if let tag = appState.activeTag {
+            notes = notes.filter { $0.tags.contains(tag) }
         }
-        return SearchService.shared.search(query: searchText, in: appState.fileManager.notes)
+
+        // Then apply text search
+        if searchText.isEmpty {
+            return notes
+        }
+        return SearchService.shared.search(query: searchText, in: notes)
     }
 
     private var allTags: [String] {
@@ -307,15 +344,22 @@ struct NoteRow: View {
     let theme: MarkdownTheme
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text(note.title)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(Color(theme.sidebarTextPrimary))
-                .lineLimit(1)
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(note.title)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Color(theme.sidebarTextPrimary))
+                    .lineLimit(1)
 
-            Text(note.lastModified, style: .relative)
-                .font(.system(size: 11))
-                .foregroundStyle(Color(theme.sidebarTextMuted))
+                Text(note.lastModified, style: .relative)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color(theme.sidebarTextMuted))
+            }
+
+            if taskTotal > 0 {
+                Spacer(minLength: 4)
+                TaskProgressBadge(done: taskDone, total: taskTotal)
+            }
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
@@ -324,5 +368,36 @@ struct NoteRow: View {
             RoundedRectangle(cornerRadius: 6)
                 .fill(isSelected ? Color(theme.sidebarItemActive) : Color.clear)
         )
+    }
+
+    private var taskCounts: [TaskState: Int] {
+        TaskManager.shared.taskCounts(in: note.content)
+    }
+
+    private var taskTotal: Int {
+        taskCounts.values.reduce(0, +)
+    }
+
+    private var taskDone: Int {
+        taskCounts[.done, default: 0]
+    }
+}
+
+// MARK: - Task Progress Badge
+
+struct TaskProgressBadge: View {
+    let done: Int
+    let total: Int
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Image(systemName: done == total ? "checkmark.circle.fill" : "circle.dotted.circle")
+                .font(.caption2)
+                .foregroundStyle(done == total ? Color.green : Color.orange)
+            Text("\(done)/\(total)")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+                .monospacedDigit()
+        }
     }
 }
