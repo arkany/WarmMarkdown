@@ -3,17 +3,23 @@ import SwiftUI
 struct MarkdownEditorView: View {
     @Binding var note: NoteDocument
     @Environment(AppState.self) private var appState
+
     var body: some View {
         let formatter = MarkdownFormatter(theme: appState.themeManager.currentTheme)
 
         TextViewWrapper(
             text: $note.content,
             formatter: formatter,
+            aiCommentManager: appState.aiCommentManager,
             onTextChange: { newText in
                 saveWithDebounce(content: newText)
             }
         )
         .background(Color(appState.themeManager.currentTheme.background))
+        .onChange(of: note.id) { _, _ in
+            // Clear all AI comments when the user switches to a different note
+            appState.aiCommentManager.clearAll()
+        }
     }
 
     private func saveWithDebounce(content: String) {

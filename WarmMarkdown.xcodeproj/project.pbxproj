@@ -34,6 +34,10 @@
 		A10025 /* AIAssistantPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10026; };
 		A10026 /* FloatingToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10027; };
 		A10027 /* EditorToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10028; };
+		A10028 /* AIComment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10029; };
+		A10029 /* AnthropicService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10030; };
+		A10031 /* AICommentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10031; };
+		A10032 /* APIKeySetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10032; };
 		A10030 /* Markdown in Frameworks */ = {isa = PBXBuildFile; productRef = D10001; };
 /* End PBXBuildFile section */
 
@@ -66,6 +70,10 @@
 		B10026 /* AIAssistantPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantPane.swift; sourceTree = "<group>"; };
 		B10027 /* FloatingToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingToolbar.swift; sourceTree = "<group>"; };
 		B10028 /* EditorToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorToolbar.swift; sourceTree = "<group>"; };
+		B10029 /* AIComment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIComment.swift; sourceTree = "<group>"; };
+		B10030 /* AnthropicService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnthropicService.swift; sourceTree = "<group>"; };
+		B10031 /* AICommentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AICommentManager.swift; sourceTree = "<group>"; };
+		B10032 /* APIKeySetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeySetupView.swift; sourceTree = "<group>"; };
 		B10099 /* WarmMarkdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WarmMarkdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -100,6 +108,7 @@
 				G10004 /* Tasks */,
 				G10005 /* Files */,
 				G10006 /* Resources */,
+			G10008 /* AI */,
 			);
 			path = WarmMarkdown;
 			sourceTree = "<group>";
@@ -170,6 +179,17 @@
 				B10024 /* one-dark.json */,
 			);
 			path = Themes;
+			sourceTree = "<group>";
+		};
+		G10008 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				B10029 /* AIComment.swift */,
+				B10030 /* AnthropicService.swift */,
+				B10031 /* AICommentManager.swift */,
+			B10032 /* APIKeySetupView.swift */,
+			);
+			path = AI;
 			sourceTree = "<group>";
 		};
 		G10099 /* Products */ = {
@@ -281,6 +301,10 @@
 				A10025 /* AIAssistantPane.swift in Sources */,
 				A10026 /* FloatingToolbar.swift in Sources */,
 				A10027 /* EditorToolbar.swift in Sources */,
+				A10028 /* AIComment.swift in Sources */,
+				A10029 /* AnthropicService.swift in Sources */,
+				A10031 /* AICommentManager.swift in Sources */,
+				A10032 /* APIKeySetupView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

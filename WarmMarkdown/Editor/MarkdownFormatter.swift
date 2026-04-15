@@ -41,6 +41,21 @@ final class MarkdownFormatter {
         let fullRange = NSRange(location: 0, length: textStorage.length)
         guard fullRange.length > 0 else { return }
 
+        // Save AI comment ranges before the full reset — setAttributes below wipes everything.
+        // Each entry is (storageRange, fullAttributeDict) so we can restore exactly.
+        var savedCommentRanges: [(NSRange, [NSAttributedString.Key: Any])] = []
+        var scanPos = 0
+        while scanPos < textStorage.length {
+            var effectiveRange = NSRange()
+            if textStorage.attribute(.aiCommentID, at: scanPos, effectiveRange: &effectiveRange) != nil {
+                let attrs = textStorage.attributes(at: scanPos, effectiveRange: nil)
+                savedCommentRanges.append((effectiveRange, attrs))
+                scanPos = effectiveRange.location + effectiveRange.length
+            } else {
+                scanPos += 1
+            }
+        }
+
         // Reset to base style — generous line spacing matching reference's leading-loose
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 8
@@ -267,6 +282,12 @@ final class MarkdownFormatter {
                     .font: NSFont.systemFont(ofSize: 14, weight: .medium),
                 ], range: token.range)
             }
+        }
+
+        // Restore AI comment ranges — overrides any token attributes applied above.
+        for (range, attrs) in savedCommentRanges {
+            guard range.location + range.length <= textStorage.length else { continue }
+            textStorage.setAttributes(attrs, range: range)
         }
     }
 }

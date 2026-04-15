@@ -28,7 +28,8 @@ struct ContentView: View {
                     EditorToolbar(
                         theme: theme,
                         note: state.selectedNote,
-                        showAIPane: $showAIPane
+                        showAIPane: $showAIPane,
+                        aiCommentManager: appState.aiCommentManager
                     )
 
                     // Editor content
@@ -141,18 +142,54 @@ struct ContentView: View {
             }
         }
         .onAppear {
-            NSEvent.addLocalMonitorForEvents(matching: .keyDown) { event in
-                if event.modifierFlags.contains(.command) && event.keyCode == 35 { // Cmd+P
-                    state.showQuickSwitcher.toggle()
+            NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak appState] event in
+                guard let appState else { return event }
+                let mods = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
+                let keyCode = event.keyCode
+
+                // Cmd+P — Quick Switcher
+                if mods == .command && keyCode == 35 {
+                    appState.showQuickSwitcher.toggle()
                     return nil
                 }
-                if event.modifierFlags.contains(.command) && event.keyCode == 42 { // Cmd+\
-                    withAnimation {
-                        state.sidebarVisible.toggle()
-                    }
+                // Cmd+\ — Toggle Sidebar
+                if mods == .command && keyCode == 42 {
+                    withAnimation { appState.sidebarVisible.toggle() }
+                    return nil
+                }
+                // Cmd+' (keyCode 39) — inline provocation
+                if mods == .command && keyCode == 39 {
+                    guard appState.selectedNote != nil else { return event }
+                    appState.aiCommentManager.requestProvocation()
+                    return nil
+                }
+                // Cmd+Shift+' (keyCode 39) — coach pass
+                if mods == [.command, .shift] && keyCode == 39 {
+                    guard appState.selectedNote != nil else { return event }
+                    appState.aiCommentManager.requestCoachPass()
                     return nil
                 }
                 return event
+            }
+        }
+        .onChange(of: appState.selectedNote?.id) { _, _ in
+            // Clear AI comments whenever the note selection changes
+            appState.aiCommentManager.clearAll()
+        }
+        .sheet(isPresented: Binding(
+            get: { appState.aiCommentManager.showAPIKeySheet },
+            set: { appState.aiCommentManager.showAPIKeySheet = $0 }
+        )) {
+            APIKeySetupView {
+                // After the key is saved, re-fire whatever the user originally wanted
+                let manager = appState.aiCommentManager
+                let pending = manager.pendingAction
+                manager.pendingAction = nil
+                switch pending {
+                case .inline:    manager.requestProvocation()
+                case .coachPass: manager.requestCoachPass()
+                case nil:        break
+                }
             }
         }
     }
