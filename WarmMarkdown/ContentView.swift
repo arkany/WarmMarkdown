@@ -176,6 +176,22 @@ struct ContentView: View {
             // Clear AI comments whenever the note selection changes
             appState.aiCommentManager.clearAll()
         }
+        .sheet(isPresented: Binding(
+            get: { appState.aiCommentManager.showAPIKeySheet },
+            set: { appState.aiCommentManager.showAPIKeySheet = $0 }
+        )) {
+            APIKeySetupView {
+                // After the key is saved, re-fire whatever the user originally wanted
+                let manager = appState.aiCommentManager
+                let pending = manager.pendingAction
+                manager.pendingAction = nil
+                switch pending {
+                case .inline:    manager.requestProvocation()
+                case .coachPass: manager.requestCoachPass()
+                case nil:        break
+                }
+            }
+        }
     }
 }
 

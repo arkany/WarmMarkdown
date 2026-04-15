@@ -56,6 +56,11 @@ struct WarmMarkdownApp: App {
                 }
             }
         }
+
+        // Standard macOS Settings window — Cmd+, or WarmMarkdown → Settings…
+        Settings {
+            APIKeySetupView()
+        }
     }
 }
 

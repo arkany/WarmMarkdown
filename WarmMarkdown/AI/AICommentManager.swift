@@ -1,6 +1,13 @@
 import Foundation
 import AppKit
 
+/// The action the user tried to trigger before the API key was set.
+/// Stored so it can be re-fired automatically after the key is saved.
+enum PendingProvocationAction {
+    case inline
+    case coachPass
+}
+
 /// Orchestrates AI provocation comments.
 /// Callbacks are set by TextViewWrapper.Coordinator to bridge into NSTextStorage.
 @Observable
@@ -10,6 +17,13 @@ final class AICommentManager {
 
     var comments: [AIComment] = []
     var isGenerating: Bool = false
+
+    /// Set to true when the user triggers a provocation with no API key configured.
+    /// ContentView observes this to present the API key setup sheet.
+    var showAPIKeySheet: Bool = false
+
+    /// The action that triggered the sheet, so it can be re-fired after saving.
+    var pendingAction: PendingProvocationAction? = nil
 
     var activeComments: [AIComment] { comments.filter { !$0.isDismissed } }
 
@@ -61,7 +75,11 @@ final class AICommentManager {
 
     func fetchProvocation(for paragraphText: String, anchorRange: NSRange) {
         guard !isGenerating else { return }
-        guard AnthropicService.shared.apiKey != nil else { return }
+        guard AnthropicService.shared.apiKey != nil else {
+            pendingAction = .inline
+            showAPIKeySheet = true
+            return
+        }
 
         isGenerating = true
         Task { @MainActor [weak self] in
@@ -82,7 +100,11 @@ final class AICommentManager {
 
     func fetchCoachPass(for fullText: String) {
         guard !isGenerating else { return }
-        guard AnthropicService.shared.apiKey != nil else { return }
+        guard AnthropicService.shared.apiKey != nil else {
+            pendingAction = .coachPass
+            showAPIKeySheet = true
+            return
+        }
 
         isGenerating = true
         Task { @MainActor [weak self] in
