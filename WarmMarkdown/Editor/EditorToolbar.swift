@@ -4,6 +4,7 @@ struct EditorToolbar: View {
     let theme: MarkdownTheme
     let note: NoteDocument?
     @Binding var showAIPane: Bool
+    var aiCommentManager: AICommentManager? = nil
     @State private var appeared = false
     @State private var isToolbarHovered = false
 
@@ -27,6 +28,30 @@ struct EditorToolbar: View {
             }
             .opacity(appeared ? 1 : 0)
             .animation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1), value: appeared)
+
+            Spacer()
+
+            // Centre: provoke hint or generating indicator
+            if let manager = aiCommentManager, note != nil {
+                if manager.isGenerating {
+                    HStack(spacing: 5) {
+                        ProgressView()
+                            .scaleEffect(0.55)
+                            .frame(width: 12, height: 12)
+                        Text("thinking…")
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(Color(theme.sidebarTextMuted).opacity(0.7))
+                            .tracking(0.3)
+                    }
+                    .transition(.opacity)
+                } else {
+                    Text("⌘' · provoke")
+                        .font(.system(size: 10, weight: .regular))
+                        .foregroundStyle(Color(theme.sidebarTextMuted).opacity(0.22))
+                        .tracking(0.4)
+                        .transition(.opacity)
+                }
+            }
 
             Spacer()
 
@@ -93,6 +118,7 @@ struct EditorToolbar: View {
             isToolbarHovered = hovering
         }
         .onAppear { appeared = true }
+        .animation(.easeInOut(duration: 0.3), value: aiCommentManager?.isGenerating)
     }
 
     private var lastEditedText: String {

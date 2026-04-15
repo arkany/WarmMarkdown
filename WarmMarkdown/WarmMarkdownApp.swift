@@ -33,6 +33,17 @@ struct WarmMarkdownApp: App {
                 }
                 .keyboardShortcut("p")
             }
+            CommandMenu("Write") {
+                Button("Provoke…") {
+                    appState.aiCommentManager.requestProvocation()
+                }
+                .keyboardShortcut("'", modifiers: .command)
+
+                Button("Coach Pass") {
+                    appState.aiCommentManager.requestCoachPass()
+                }
+                .keyboardShortcut("'", modifiers: [.command, .shift])
+            }
             CommandMenu("Themes") {
                 ForEach(appState.themeManager.availableThemes) { theme in
                     Button(theme.name) {
@@ -52,6 +63,7 @@ struct WarmMarkdownApp: App {
 final class AppState {
     var fileManager = FileManagerService()
     var themeManager = ThemeManager()
+    var aiCommentManager = AICommentManager()
     var selectedNote: NoteDocument?
     var showQuickSwitcher = false
     var sidebarVisible = true
