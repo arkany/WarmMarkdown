@@ -1,22 +1,41 @@
 import SwiftUI
 
+// Notification names for editor formatting actions
+extension Notification.Name {
+    static let editorBold = Notification.Name("editorBold")
+    static let editorItalic = Notification.Name("editorItalic")
+    static let editorLink = Notification.Name("editorLink")
+    static let editorChecklist = Notification.Name("editorChecklist")
+    static let editorImage = Notification.Name("editorImage")
+}
+
 struct FloatingToolbar: View {
     let theme: MarkdownTheme
     @State private var appeared = false
 
     var body: some View {
         HStack(spacing: 2) {
-            ToolbarButton(icon: "bold", theme: theme)
-            ToolbarButton(icon: "italic", theme: theme)
-            ToolbarButton(icon: "link", theme: theme)
+            ToolbarButton(icon: "bold", theme: theme) {
+                NotificationCenter.default.post(name: .editorBold, object: nil)
+            }
+            ToolbarButton(icon: "italic", theme: theme) {
+                NotificationCenter.default.post(name: .editorItalic, object: nil)
+            }
+            ToolbarButton(icon: "link", theme: theme) {
+                NotificationCenter.default.post(name: .editorLink, object: nil)
+            }
 
             Divider()
                 .frame(height: 16)
                 .background(Color.white.opacity(0.2))
                 .padding(.horizontal, 4)
 
-            ToolbarButton(icon: "checklist", theme: theme)
-            ToolbarButton(icon: "photo", theme: theme)
+            ToolbarButton(icon: "checklist", theme: theme) {
+                NotificationCenter.default.post(name: .editorChecklist, object: nil)
+            }
+            ToolbarButton(icon: "photo", theme: theme) {
+                NotificationCenter.default.post(name: .editorImage, object: nil)
+            }
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 4)
@@ -36,12 +55,13 @@ struct FloatingToolbar: View {
 struct ToolbarButton: View {
     let icon: String
     let theme: MarkdownTheme
+    let action: () -> Void
     @State private var isHovered = false
 
     private var isDarkToolbar: Bool { !theme.isDark }
 
     var body: some View {
-        Button {} label: {
+        Button(action: action) {
             Image(systemName: icon)
                 .font(.system(size: 14))
                 .foregroundStyle(isDarkToolbar ? .white : .black)

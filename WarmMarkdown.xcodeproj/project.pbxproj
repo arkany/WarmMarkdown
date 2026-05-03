@@ -34,6 +34,8 @@
 		A10025 /* AIAssistantPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10026; };
 		A10026 /* FloatingToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10027; };
 		A10027 /* EditorToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10028; };
+		A10028 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10029; };
+		A10029 /* RecentDocumentsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10030; };
 		A10030 /* Markdown in Frameworks */ = {isa = PBXBuildFile; productRef = D10001; };
 /* End PBXBuildFile section */
 
@@ -57,6 +59,8 @@
 		B10017 /* QuickSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickSwitcher.swift; sourceTree = "<group>"; };
 		B10018 /* SearchService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchService.swift; sourceTree = "<group>"; };
 		B10019 /* WikiLinkParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WikiLinkParser.swift; sourceTree = "<group>"; };
+		B10030 /* RecentDocumentsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentDocumentsService.swift; sourceTree = "<group>"; };
+		B10031 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B10020 /* warm-oatmeal.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "warm-oatmeal.json"; sourceTree = "<group>"; };
 		B10021 /* dracula.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = dracula.json; sourceTree = "<group>"; };
 		B10022 /* nord.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = nord.json; sourceTree = "<group>"; };
@@ -66,6 +70,7 @@
 		B10026 /* AIAssistantPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIAssistantPane.swift; sourceTree = "<group>"; };
 		B10027 /* FloatingToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingToolbar.swift; sourceTree = "<group>"; };
 		B10028 /* EditorToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorToolbar.swift; sourceTree = "<group>"; };
+		B10029 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		B10099 /* WarmMarkdown.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WarmMarkdown.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -95,10 +100,12 @@
 				B10001 /* WarmMarkdownApp.swift */,
 				B10002 /* ContentView.swift */,
 				B10025 /* WarmMarkdown.entitlements */,
+				B10031 /* Info.plist */,
 				G10002 /* Editor */,
 				G10003 /* Themes */,
 				G10004 /* Tasks */,
 				G10005 /* Files */,
+				G10008 /* Settings */,
 				G10006 /* Resources */,
 			);
 			path = WarmMarkdown;
@@ -148,6 +155,7 @@
 				B10017 /* QuickSwitcher.swift */,
 				B10018 /* SearchService.swift */,
 				B10019 /* WikiLinkParser.swift */,
+				B10030 /* RecentDocumentsService.swift */,
 			);
 			path = Files;
 			sourceTree = "<group>";
@@ -170,6 +178,14 @@
 				B10024 /* one-dark.json */,
 			);
 			path = Themes;
+			sourceTree = "<group>";
+		};
+		G10008 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				B10029 /* SettingsView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		G10099 /* Products */ = {
@@ -281,6 +297,8 @@
 				A10025 /* AIAssistantPane.swift in Sources */,
 				A10026 /* FloatingToolbar.swift in Sources */,
 				A10027 /* EditorToolbar.swift in Sources */,
+				A10028 /* SettingsView.swift in Sources */,
+				A10029 /* RecentDocumentsService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,7 +431,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WarmMarkdown/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -438,7 +457,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = WarmMarkdown/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (

@@ -193,11 +193,15 @@ final class MarkdownFormatter {
                     .foregroundColor: theme.foreground.withAlphaComponent(0.2),
                 ], range: token.range)
 
-            case .image:
-                // Style the entire ![alt](url) as a link-coloured image reference
+            case .image(let url):
+                // Hide the markdown syntax and reserve vertical space for the image overlay
+                let imageParagraph = NSMutableParagraphStyle()
+                imageParagraph.lineSpacing = 8
+                imageParagraph.paragraphSpacing = 220   // 200pt image + 20pt gap
                 textStorage.addAttributes([
-                    .foregroundColor: theme.linkColor,
-                    .font: bodyFont,
+                    .foregroundColor: NSColor.clear,
+                    .paragraphStyle: imageParagraph,
+                    .toolTip: url,
                 ], range: token.range)
 
             case .blockquote:

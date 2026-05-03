@@ -29,15 +29,6 @@ struct SidebarView: View {
                 }
 
                 Spacer()
-
-                Button {
-                    // Settings placeholder
-                } label: {
-                    Image(systemName: "gearshape")
-                        .font(.system(size: 14))
-                        .foregroundStyle(Color(theme.sidebarTextMuted))
-                }
-                .buttonStyle(.plain)
             }
             .padding(.horizontal, 16)
             .padding(.top, 20)
@@ -170,30 +161,62 @@ struct SidebarView: View {
                 .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.4), value: appeared)
             }
 
-            Spacer()
+            // Notes list
+            VStack(alignment: .leading, spacing: 2) {
+                Text(searchText.isEmpty ? "NOTES" : "RESULTS")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Color(theme.sidebarTextMuted))
+                    .tracking(1)
+                    .padding(.horizontal, 12)
+                    .padding(.top, 16)
+                    .padding(.bottom, 6)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .opacity(appeared ? 1 : 0)
+            .offset(x: appeared ? 0 : -20)
+            .animation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.35), value: appeared)
 
-            // Notes list when searching or filtering by tag
-            if !searchText.isEmpty || state.activeTag != nil {
-                ScrollView {
-                    LazyVStack(spacing: 2) {
-                        ForEach(filteredNotes) { note in
-                            NoteRow(note: note, isSelected: state.selectedNote == note, theme: theme)
+            ScrollView {
+                LazyVStack(spacing: 2) {
+                    // Recent section (only shown when not searching)
+                    if searchText.isEmpty && !recentEntries.isEmpty {
+                        SidebarSectionHeader(title: "RECENT", theme: theme)
+
+                        ForEach(recentEntries) { entry in
+                            RecentNoteRow(entry: entry, isSelected: state.selectedNote?.fileURL.path == entry.path, theme: theme)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    state.selectedNote = note
+                                    state.openRecent(entry)
                                 }
                                 .contextMenu {
-                                    Button("Delete") {
-                                        state.fileManager.deleteNote(note)
-                                        if state.selectedNote == note {
-                                            state.selectedNote = nil
-                                        }
+                                    Button("Remove from Recents") {
+                                        state.recentDocuments.remove(path: entry.path)
                                     }
                                 }
                         }
+
+                        SidebarSectionHeader(title: "ALL NOTES", theme: theme)
+                            .padding(.top, 6)
                     }
-                    .padding(.horizontal, 8)
+
+                    ForEach(filteredNotes) { note in
+                        NoteRow(note: note, isSelected: state.selectedNote == note, theme: theme)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                state.selectedNote = note
+                                state.recordNoteOpened(note)
+                            }
+                            .contextMenu {
+                                Button("Delete") {
+                                    state.fileManager.deleteNote(note)
+                                    if state.selectedNote == note {
+                                        state.selectedNote = nil
+                                    }
+                                }
+                            }
+                    }
                 }
+                .padding(.horizontal, 8)
             }
 
             // Bottom user area
@@ -282,6 +305,74 @@ struct SidebarView: View {
         let tags = appState.fileManager.notes.flatMap { $0.tags }
         return Array(Set(tags)).sorted()
     }
+
+    private var recentEntries: [RecentEntry] {
+        let recorded = Array(appState.recentDocuments.entries.prefix(7))
+        if !recorded.isEmpty { return recorded }
+        // Fall back to most-recently-modified notes so the section is never empty
+        return appState.fileManager.notes.prefix(7).map { note in
+            RecentEntry(id: note.id, path: note.fileURL.path, title: note.displayTitle, accessedAt: note.lastModified)
+        }
+    }
+}
+
+// MARK: - Section Header
+
+struct SidebarSectionHeader: View {
+    let title: String
+    let theme: MarkdownTheme
+
+    var body: some View {
+        Text(title)
+            .font(.system(size: 10, weight: .semibold))
+            .foregroundStyle(Color(theme.sidebarTextMuted))
+            .tracking(1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12)
+            .padding(.top, 10)
+            .padding(.bottom, 4)
+    }
+}
+
+// MARK: - Recent Note Row
+
+struct RecentNoteRow: View {
+    let entry: RecentEntry
+    let isSelected: Bool
+    let theme: MarkdownTheme
+    @State private var isHovered = false
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "clock")
+                .font(.system(size: 11))
+                .foregroundStyle(Color(theme.sidebarTextMuted))
+                .frame(width: 16)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(entry.title.isEmpty ? "Untitled" : entry.title)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(Color(theme.sidebarTextPrimary))
+                    .lineLimit(1)
+
+                Text(entry.accessedAt.sidebarLabel)
+                    .font(.system(size: 11))
+                    .foregroundStyle(Color(theme.sidebarTextMuted))
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 5)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(isSelected ? Color(theme.sidebarItemActive) : (isHovered ? Color(theme.sidebarItemHover) : Color.clear))
+        )
+        .onHover { hovering in
+            withAnimation(.easeInOut(duration: 0.15)) { isHovered = hovering }
+        }
+    }
 }
 
 // MARK: - Sidebar Nav Item
@@ -346,12 +437,12 @@ struct NoteRow: View {
     var body: some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 3) {
-                Text(note.title)
+                Text(note.displayTitle)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundStyle(Color(theme.sidebarTextPrimary))
                     .lineLimit(1)
 
-                Text(note.lastModified, style: .relative)
+                Text(note.lastModified.sidebarLabel)
                     .font(.system(size: 11))
                     .foregroundStyle(Color(theme.sidebarTextMuted))
             }
@@ -400,4 +491,40 @@ struct TaskProgressBadge: View {
                 .monospacedDigit()
         }
     }
+}
+
+// MARK: - Date formatting
+
+private extension Date {
+    /// Returns a concise label: time if today, weekday if this week, short date otherwise.
+    var sidebarLabel: String {
+        let cal = Calendar.current
+        if cal.isDateInToday(self) {
+            return Self.timeFormatter.string(from: self)
+        } else if let daysAgo = cal.dateComponents([.day], from: self, to: .now).day, daysAgo < 7 {
+            return Self.weekdayFormatter.string(from: self)
+        } else {
+            return Self.shortDateFormatter.string(from: self)
+        }
+    }
+
+    private static let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .none
+        f.timeStyle = .short
+        return f
+    }()
+
+    private static let weekdayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "EEEE"   // e.g. "Monday"
+        return f
+    }()
+
+    private static let shortDateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.timeStyle = .none
+        return f
+    }()
 }

@@ -17,8 +17,11 @@ struct MarkdownEditorView: View {
     }
 
     private func saveWithDebounce(content: String) {
-        note.content = content
-        note.title = extractTitle(from: content)
+        var updated = note
+        updated.content = content
+        updated.title = extractTitle(from: content)
+        updated.lastModified = Date()
+        note = updated
 
         Task {
             try? await Task.sleep(for: .milliseconds(500))

@@ -32,9 +32,9 @@ struct ContentView: View {
                     )
 
                     // Editor content
-                    if let note = state.selectedNote {
+                    if state.selectedNote != nil {
                         MarkdownEditorView(note: Binding(
-                            get: { note },
+                            get: { state.selectedNote! },
                             set: { state.selectedNote = $0 }
                         ))
                     } else {
@@ -73,6 +73,20 @@ struct ContentView: View {
                 .frame(height: 80)
                 .allowsHitTesting(false)
 
+                // Character count (bottom right)
+                if let note = state.selectedNote {
+                    HStack {
+                        Spacer()
+                        Text("\(note.content.count) characters")
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundStyle(Color(theme.sidebarTextMuted))
+                            .tracking(0.3)
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 6)
+                    }
+
+                }
+
                 // Floating formatting toolbar
                 FloatingToolbar(theme: theme)
                     .padding(.bottom, 24)
@@ -97,6 +111,7 @@ struct ContentView: View {
                     .transition(.move(edge: .trailing).combined(with: .opacity))
             }
         }
+        .background(Color(theme.background))
         .animation(.spring(response: 0.5, dampingFraction: 0.85), value: state.sidebarVisible)
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: showAIPane)
         .toolbar {
@@ -113,31 +128,37 @@ struct ContentView: View {
 
             ToolbarItem(placement: .principal) {
                 if let note = state.selectedNote {
-                    Text(note.title)
+                    Text(note.displayTitle)
                         .font(.headline)
-                }
-            }
-
-            ToolbarItem(placement: .status) {
-                if let note = state.selectedNote {
-                    Text(wordCountLabel(for: note.content))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .monospacedDigit()
+                        .padding(.horizontal, 20)
                 }
             }
 
             ToolbarItem(placement: .primaryAction) {
                 Menu {
                     ForEach(appState.themeManager.availableThemes) { themeOption in
-                        Button(themeOption.name) {
+                        Button {
                             appState.themeManager.selectTheme(themeOption)
+                        } label: {
+                            HStack {
+                                Text(themeOption.name)
+                                if themeOption.id == theme.id {
+                                    Spacer()
+                                    Image(systemName: "checkmark")
+                                }
+                            }
                         }
                     }
                 } label: {
                     Image(systemName: "paintpalette")
                 }
                 .help("Switch Theme")
+            }
+        }
+        .onChange(of: state.selectedNote) { _, newNote in
+            if let note = newNote {
+                UserDefaults.standard.set(note.fileURL.path, forKey: "selectedNotePath")
+                state.recordNoteOpened(note)
             }
         }
         .onAppear {
@@ -156,14 +177,9 @@ struct ContentView: View {
             }
         }
     }
+
 }
 
-private func wordCountLabel(for content: String) -> String {
-    let words = content.components(separatedBy: .whitespacesAndNewlines)
-        .filter { !$0.isEmpty }
-    let chars = content.count
-    return "\(words.count) words · \(chars) chars"
-}
 
 struct QuickSwitcherOverlay: View {
     @Environment(AppState.self) private var appState

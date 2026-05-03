@@ -54,24 +54,24 @@ final class ThemeManager {
     }
 
     private func loadAllThemes() {
-        var themes: [MarkdownTheme] = []
+        // Start with all built-in hardcoded themes
+        var themes = MarkdownTheme.allThemes
 
-        // Load bundled themes
-        let bundledNames = ["warm-oatmeal", "dracula", "nord", "gruvbox-warm", "one-dark"]
-        for name in bundledNames {
-            if let url = Bundle.main.url(forResource: name, withExtension: "json") {
-                if let theme = loadTheme(from: url, id: name) {
-                    themes.append(theme)
-                }
+        // Load bundled JSON themes from the app bundle
+        let bundleJsonURLs = Bundle.main.urls(forResourcesWithExtension: "json", subdirectory: nil)
+                          ?? Bundle.main.urls(forResourcesWithExtension: "json", subdirectory: "Themes")
+                          ?? []
+        for fileURL in bundleJsonURLs {
+            let stem = fileURL.deletingPathExtension().lastPathComponent
+            let id = "bundle-\(stem)"
+            // Skip if already covered by a hardcoded theme
+            guard !themes.contains(where: { $0.id == id || $0.id == stem }) else { continue }
+            if let theme = loadTheme(from: fileURL, id: id) {
+                themes.append(theme)
             }
         }
 
-        // If warm-oatmeal wasn't loaded from JSON, use the hardcoded default
-        if !themes.contains(where: { $0.id == "warm-oatmeal" }) {
-            themes.insert(.warmOatmeal, at: 0)
-        }
-
-        // Load custom imported themes
+        // Load additional custom imported themes
         if let customFiles = try? FileManager.default.contentsOfDirectory(
             at: customThemesDirectory,
             includingPropertiesForKeys: nil,

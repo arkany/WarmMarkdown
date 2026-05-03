@@ -43,7 +43,9 @@ final class FileManagerService {
             if let content = try? String(contentsOf: fileURL, encoding: .utf8) {
                 let title = extractTitle(from: content, fallback: fileURL.deletingPathExtension().lastPathComponent)
                 let modified = resourceValues.contentModificationDate ?? Date()
-                let note = NoteDocument(title: title, content: content, fileURL: fileURL, lastModified: modified)
+                // Preserve existing UUID so selectedNote references stay valid after directory events
+                let existingID = notes.first(where: { $0.fileURL == fileURL })?.id ?? UUID()
+                let note = NoteDocument(id: existingID, title: title, content: content, fileURL: fileURL, lastModified: modified)
                 loaded.append(note)
             }
         }
@@ -56,7 +58,9 @@ final class FileManagerService {
         do {
             try note.content.write(to: note.fileURL, atomically: true, encoding: .utf8)
             if let index = notes.firstIndex(where: { $0.id == note.id }) {
-                notes[index] = note
+                var saved = note
+                saved.lastModified = Date()
+                notes[index] = saved
             }
         } catch {
             print("Failed to save note: \(error)")
@@ -64,8 +68,18 @@ final class FileManagerService {
     }
 
     func createNote(title: String) -> NoteDocument {
-        let fileName = sanitizeFileName(title) + ".md"
-        let fileURL = notesDirectory.appendingPathComponent(fileName)
+        let baseName = sanitizeFileName(title)
+        var fileName = baseName + ".md"
+        var fileURL = notesDirectory.appendingPathComponent(fileName)
+
+        // Avoid overwriting existing files
+        var counter = 1
+        while FileManager.default.fileExists(atPath: fileURL.path) {
+            fileName = "\(baseName) \(counter).md"
+            fileURL = notesDirectory.appendingPathComponent(fileName)
+            counter += 1
+        }
+
         let content = "# \(title)\n\n"
         let note = NoteDocument(title: title, content: content, fileURL: fileURL)
 
@@ -148,6 +162,25 @@ final class FileManagerService {
         var sanitized = name.components(separatedBy: illegal).joined(separator: "-")
         if sanitized.isEmpty { sanitized = "Untitled" }
         return sanitized
+    }
+
+    // MARK: - External File Loading
+
+    /// Load a .md file from any location (user-selected via NSOpenPanel or Finder open).
+    /// Returns a NoteDocument if the file is readable. The caller is responsible for
+    /// starting/stopping security-scoped access when a bookmark URL is involved.
+    func loadExternalFile(at url: URL) -> NoteDocument? {
+        guard let content = try? String(contentsOf: url, encoding: .utf8) else { return nil }
+        let attrs = try? FileManager.default.attributesOfItem(atPath: url.path)
+        let modified = (attrs?[.modificationDate] as? Date) ?? Date()
+        let title = extractTitle(from: content, fallback: url.deletingPathExtension().lastPathComponent)
+        let existingID = notes.first(where: { $0.fileURL == url })?.id ?? UUID()
+        return NoteDocument(id: existingID, title: title, content: content, fileURL: url, lastModified: modified)
+    }
+
+    /// True if `url` lives inside the current notes directory.
+    func isInNotesDirectory(_ url: URL) -> Bool {
+        url.path.hasPrefix(notesDirectory.path)
     }
 
     /// Get subfolder structure for sidebar

@@ -35,8 +35,20 @@ struct NoteDocument: Identifiable, Equatable, Hashable {
         tags = NoteDocument.extractTags(from: content)
     }
 
+    /// First line of content with heading markers stripped, truncated to 20 characters.
+    var displayTitle: String {
+        let firstLine = content
+            .components(separatedBy: .newlines)
+            .first(where: { !$0.trimmingCharacters(in: .whitespaces).isEmpty })?
+            .trimmingCharacters(in: .whitespaces)
+            .replacingOccurrences(of: "^#+\\s*", with: "", options: .regularExpression)
+            ?? "Untitled"
+        if firstLine.isEmpty { return "Untitled" }
+        return String(firstLine.prefix(20))
+    }
+
     static func == (lhs: NoteDocument, rhs: NoteDocument) -> Bool {
-        lhs.id == rhs.id
+        lhs.id == rhs.id && lhs.content == rhs.content && lhs.title == rhs.title && lhs.lastModified == rhs.lastModified
     }
 
     func hash(into hasher: inout Hasher) {

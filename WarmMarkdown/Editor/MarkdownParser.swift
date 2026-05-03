@@ -22,7 +22,7 @@ struct MarkdownParser {
         case linkText
         case linkURL
         case linkMarker
-        case image
+        case image(url: String)
         case blockquote
         case blockquoteMarker
         case listMarker
@@ -147,45 +147,25 @@ struct MarkdownParser {
         parsePattern(#"`([^`]+)`"#, in: nsLine, offset: lineOffset, markerLen: 1,
                      contentType: .inlineCode, markerType: .inlineCodeMarker, tokens: &tokens)
 
-        // Images ![alt](url) — must be parsed before links to avoid partial overlap
+        // Images ![alt](url)
         let imagePattern = #"!\[([^\]]*)\]\(([^)]+)\)"#
-        var imageCoveredRanges: [NSRange] = []
         if let regex = try? NSRegularExpression(pattern: imagePattern) {
             let matches = regex.matches(in: line, range: NSRange(location: 0, length: nsLine.length))
             for match in matches {
-                let fullRange = NSRange(location: lineOffset + match.range.location, length: match.range.length)
-                let altRange = match.range(at: 1)
                 let urlRange = match.range(at: 2)
-
                 if let r = Range(urlRange, in: line) {
                     let url = String(line[r])
-                    tokens.append(Token(type: .image, range: fullRange))
-                    // Alt text
-                    if altRange.length > 0 {
-                        tokens.append(Token(type: .linkText, range: NSRange(location: lineOffset + altRange.location, length: altRange.length)))
-                    }
-                    // URL portion (faded)
-                    tokens.append(Token(type: .linkURL, range: NSRange(location: lineOffset + urlRange.location, length: urlRange.length)))
-                    // Markers: ![ ]( and )
-                    tokens.append(Token(type: .linkMarker, range: NSRange(location: lineOffset + match.range.location, length: 2))) // ![
-                    tokens.append(Token(type: .linkMarker, range: NSRange(location: lineOffset + altRange.location + altRange.length, length: 2))) // ](
-                    tokens.append(Token(type: .linkMarker, range: NSRange(location: lineOffset + match.range.location + match.range.length - 1, length: 1))) // )
-                    imageCoveredRanges.append(match.range)
+                    let fullRange = NSRange(location: lineOffset + match.range.location, length: match.range.length)
+                    tokens.append(Token(type: .image(url: url), range: fullRange))
                 }
             }
         }
 
-        // Links [text](url) — skip ranges already covered by images
-        let linkPattern = #"\[([^\]]+)\]\(([^)]+)\)"#
+        // Links [text](url) — skip if preceded by ! (already parsed as image)
+        let linkPattern = #"(?<!!)\[([^\]]+)\]\(([^)]+)\)"#
         if let regex = try? NSRegularExpression(pattern: linkPattern) {
             let matches = regex.matches(in: line, range: NSRange(location: 0, length: nsLine.length))
             for match in matches {
-                // Skip if this match is inside an image token
-                let overlaps = imageCoveredRanges.contains { imageRange in
-                    NSIntersectionRange(imageRange, match.range).length > 0
-                }
-                guard !overlaps else { continue }
-
                 let fullRange = NSRange(location: lineOffset + match.range.location, length: match.range.length)
                 let textRange = match.range(at: 1)
                 let urlRange = match.range(at: 2)
