@@ -164,6 +164,242 @@ struct TextViewWrapper: NSViewRepresentable {
             insertText(markdown, selectRange: NSRange(location: range.location + 2, length: altText.count))
         }
 
+        @objc private func handleStrikethrough() {
+            wrapSelection(prefix: "~~", suffix: "~~", placeholder: "strikethrough text")
+        }
+
+        @objc private func handleInlineCode() {
+            wrapSelection(prefix: "`", suffix: "`", placeholder: "code")
+        }
+
+        @objc private func handleCodeBlock() {
+            guard let textView = textView else { return }
+            let range = textView.selectedRange()
+            let selectedText = (textView.string as NSString).substring(with: range)
+            if selectedText.isEmpty {
+                insertText("```\n\n```", selectRange: NSRange(location: range.location + 4, length: 0))
+            } else {
+                let block = "```\n\(selectedText)\n```"
+                replaceAndSelect(in: range, with: block,
+                                 selectRange: NSRange(location: range.location + 4, length: selectedText.count))
+            }
+        }
+
+        @objc private func handleUnderline() {
+            wrapSelection(prefix: "<u>", suffix: "</u>", placeholder: "underlined text")
+        }
+
+        private func handleHeading(_ level: Int) {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let lineRange = text.lineRange(for: textView.selectedRange())
+            var line = text.substring(with: lineRange)
+            let hasNewline = line.hasSuffix("\n")
+            if hasNewline { line = String(line.dropLast()) }
+            let stripped: String
+            if let match = line.range(of: "^#{1,6} ?", options: .regularExpression) {
+                stripped = String(line[match.upperBound...])
+            } else {
+                stripped = line
+            }
+            let newLine = String(repeating: "#", count: level) + " " + stripped + (hasNewline ? "\n" : "")
+            textView.textStorage?.replaceCharacters(in: lineRange, with: newLine)
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: lineRange.location + newLine.count - (hasNewline ? 1 : 0), length: 0))
+        }
+
+        private func handleParagraph() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let lineRange = text.lineRange(for: textView.selectedRange())
+            var line = text.substring(with: lineRange)
+            let hasNewline = line.hasSuffix("\n")
+            if hasNewline { line = String(line.dropLast()) }
+            guard let match = line.range(of: "^#{1,6} ?", options: .regularExpression) else { return }
+            let stripped = String(line[match.upperBound...]) + (hasNewline ? "\n" : "")
+            textView.textStorage?.replaceCharacters(in: lineRange, with: stripped)
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: lineRange.location + stripped.count - (hasNewline ? 1 : 0), length: 0))
+        }
+
+        private func adjustHeadingLevel(by delta: Int) {
+            guard let textView = textView else { return }
+            let line = (textView.string as NSString).substring(with:
+                (textView.string as NSString).lineRange(for: textView.selectedRange()))
+            let level = line.prefix(while: { $0 == "#" }).count
+            let newLevel = max(0, min(6, level + delta))
+            if newLevel == 0 { handleParagraph() } else { handleHeading(newLevel) }
+        }
+
+        private func handleOrderedList() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let lineRange = text.lineRange(for: textView.selectedRange())
+            var line = text.substring(with: lineRange)
+            let hasNewline = line.hasSuffix("\n")
+            if hasNewline { line = String(line.dropLast()) }
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            let content: String
+            if trimmed.range(of: "^\\d+\\.\\s", options: .regularExpression) != nil {
+                content = trimmed.replacingOccurrences(of: "^\\d+\\.\\s+", with: "", options: .regularExpression)
+            } else {
+                content = "1. " + trimmed
+            }
+            let newLine = content + (hasNewline ? "\n" : "")
+            textView.textStorage?.replaceCharacters(in: lineRange, with: newLine)
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: lineRange.location + newLine.count - (hasNewline ? 1 : 0), length: 0))
+        }
+
+        private func handleUnorderedList() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let lineRange = text.lineRange(for: textView.selectedRange())
+            var line = text.substring(with: lineRange)
+            let hasNewline = line.hasSuffix("\n")
+            if hasNewline { line = String(line.dropLast()) }
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            let content: String
+            if trimmed.hasPrefix("- ") || trimmed.hasPrefix("* ") || trimmed.hasPrefix("+ ") {
+                content = String(trimmed.dropFirst(2))
+            } else {
+                content = "- " + trimmed
+            }
+            let newLine = content + (hasNewline ? "\n" : "")
+            textView.textStorage?.replaceCharacters(in: lineRange, with: newLine)
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: lineRange.location + newLine.count - (hasNewline ? 1 : 0), length: 0))
+        }
+
+        private func handleBlockquote() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let lineRange = text.lineRange(for: textView.selectedRange())
+            var line = text.substring(with: lineRange)
+            let hasNewline = line.hasSuffix("\n")
+            if hasNewline { line = String(line.dropLast()) }
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            let content = trimmed.hasPrefix("> ") ? String(trimmed.dropFirst(2)) : "> " + trimmed
+            let newLine = content + (hasNewline ? "\n" : "")
+            textView.textStorage?.replaceCharacters(in: lineRange, with: newLine)
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: lineRange.location + newLine.count - (hasNewline ? 1 : 0), length: 0))
+        }
+
+        private func handleHorizontalRule() {
+            guard let textView = textView else { return }
+            let range = textView.selectedRange()
+            textView.textStorage?.replaceCharacters(in: range, with: "---\n")
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: range.location + 4, length: 0))
+        }
+
+        private func handleTable() {
+            guard let textView = textView else { return }
+            let range = textView.selectedRange()
+            let table = "| Header | Header |\n| ------ | ------ |\n| Cell   | Cell   |\n"
+            insertText(table, selectRange: NSRange(location: range.location + 2, length: 6))
+        }
+
+        private func handleDuplicateLine() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let range = textView.selectedRange()
+            let lineRange = text.lineRange(for: range)
+            let line = text.substring(with: lineRange)
+            let insertion = line.hasSuffix("\n") ? line : "\n" + line
+            let insertAt = lineRange.location + lineRange.length
+            textView.textStorage?.replaceCharacters(in: NSRange(location: insertAt, length: 0), with: insertion)
+            syncTextAndFormat()
+            let newLineStart = insertAt + (line.hasSuffix("\n") ? 0 : 1)
+            textView.setSelectedRange(NSRange(location: newLineStart + (range.location - lineRange.location), length: 0))
+        }
+
+        private func handleMoveLineUp() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let range = textView.selectedRange()
+            let lineRange = text.lineRange(for: range)
+            guard lineRange.location > 0 else { return }
+            let prevRange = text.lineRange(for: NSRange(location: lineRange.location - 1, length: 0))
+            let cur = text.substring(with: lineRange)
+            let prev = text.substring(with: prevRange)
+            let combined = NSRange(location: prevRange.location, length: prevRange.length + lineRange.length)
+            textView.textStorage?.replaceCharacters(in: combined, with: cur + prev)
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: prevRange.location + (range.location - lineRange.location), length: 0))
+        }
+
+        private func handleMoveLineDown() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let range = textView.selectedRange()
+            let lineRange = text.lineRange(for: range)
+            let nextStart = lineRange.location + lineRange.length
+            guard nextStart < text.length else { return }
+            let nextRange = text.lineRange(for: NSRange(location: nextStart, length: 0))
+            let cur = text.substring(with: lineRange)
+            let next = text.substring(with: nextRange)
+            let combined = NSRange(location: lineRange.location, length: lineRange.length + nextRange.length)
+            textView.textStorage?.replaceCharacters(in: combined, with: next + cur)
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: lineRange.location + nextRange.length + (range.location - lineRange.location), length: 0))
+        }
+
+        private func handleSelectLine() {
+            guard let textView = textView else { return }
+            textView.setSelectedRange((textView.string as NSString).lineRange(for: textView.selectedRange()))
+        }
+
+        private func handleToggleComment() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let lineRange = text.lineRange(for: textView.selectedRange())
+            var line = text.substring(with: lineRange)
+            let hasNewline = line.hasSuffix("\n")
+            if hasNewline { line = String(line.dropLast()) }
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            let content: String
+            if trimmed.hasPrefix("<!--") && trimmed.hasSuffix("-->") {
+                content = String(trimmed.dropFirst(4).dropLast(3)).trimmingCharacters(in: .whitespaces)
+            } else {
+                content = "<!-- " + trimmed + " -->"
+            }
+            let newLine = content + (hasNewline ? "\n" : "")
+            textView.textStorage?.replaceCharacters(in: lineRange, with: newLine)
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: lineRange.location + content.count, length: 0))
+        }
+
+        private func handleIndent() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let range = textView.selectedRange()
+            let lineRange = text.lineRange(for: range)
+            textView.textStorage?.replaceCharacters(in: lineRange, with: "    " + text.substring(with: lineRange))
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: range.location + 4, length: range.length))
+        }
+
+        private func handleOutdent() {
+            guard let textView = textView else { return }
+            let text = textView.string as NSString
+            let range = textView.selectedRange()
+            let lineRange = text.lineRange(for: range)
+            let line = text.substring(with: lineRange)
+            let removed: Int
+            if line.hasPrefix("    ") { removed = 4 }
+            else if line.hasPrefix("\t") { removed = 1 }
+            else { return }
+            textView.textStorage?.replaceCharacters(in: lineRange, with: String(line.dropFirst(removed)))
+            syncTextAndFormat()
+            textView.setSelectedRange(NSRange(location: max(lineRange.location, range.location - removed), length: range.length))
+        }
+
+        private func handlePastePlainText() {
+            textView?.pasteAsPlainText(nil)
+        }
+
         // MARK: - Helpers
 
         private func wrapSelection(prefix: String, suffix: String, placeholder: String) {
@@ -248,13 +484,62 @@ struct TextViewWrapper: NSViewRepresentable {
         }
 
         func textView(_ textView: NSTextView, doCommandBy commandSelector: Selector) -> Bool {
-            // Cmd+Shift+T to toggle task state
-            if let event = NSApp.currentEvent,
-               event.modifierFlags.contains([.command, .shift]),
-               event.charactersIgnoringModifiers == "t" {
-                toggleTaskAtCursor()
-                return true
-            }
+            guard let event = NSApp.currentEvent, event.type == .keyDown else { return false }
+
+            let mods = event.modifierFlags.intersection([.command, .shift, .option, .control])
+            let char = event.charactersIgnoringModifiers?.lowercased() ?? ""
+            let key  = event.keyCode
+
+            let cmd      = mods == .command
+            let cmdShift = mods == [.command, .shift]
+            let opt      = mods == .option
+
+            // Text formatting
+            if cmd      && char == "b" { handleBold();          return true }
+            if cmd      && char == "i" { handleItalic();        return true }
+            if cmdShift && char == "x" { handleStrikethrough(); return true }
+            if cmd      && char == "e" { handleInlineCode();    return true }
+            if cmdShift && char == "e" { handleCodeBlock();     return true }
+            if cmd      && char == "k" { handleLink();          return true }
+            if cmdShift && char == "k" { handleImage();         return true }
+            if cmd      && char == "u" { handleUnderline();     return true }
+
+            // Headings (keyCodes: 1=18, 2=19, 3=20, 4=21, 5=23, 6=22, 0=29)
+            if cmd && key == 18 { handleHeading(1); return true }
+            if cmd && key == 19 { handleHeading(2); return true }
+            if cmd && key == 20 { handleHeading(3); return true }
+            if cmd && key == 21 { handleHeading(4); return true }
+            if cmd && key == 23 { handleHeading(5); return true }
+            if cmd && key == 22 { handleHeading(6); return true }
+            if cmd && key == 29 { handleParagraph(); return true }
+            if cmdShift && key == 30 { adjustHeadingLevel(by:  1); return true } // ⌘⇧]
+            if cmdShift && key == 33 { adjustHeadingLevel(by: -1); return true } // ⌘⇧[
+
+            // Lists
+            if cmdShift && key == 26 { handleOrderedList();   return true } // ⌘⇧7
+            if cmdShift && key == 28 { handleUnorderedList(); return true } // ⌘⇧8
+            if cmdShift && key == 25 { handleChecklist();     return true } // ⌘⇧9
+
+            // Block elements
+            if cmdShift && key == 47 { handleBlockquote();     return true } // ⌘⇧.
+            if cmdShift && key == 27 { handleHorizontalRule(); return true } // ⌘⇧-
+            if cmdShift && char == "t" { handleTable();        return true } // ⌘⇧T
+
+            // Editing
+            if cmd      && char == "d" { handleDuplicateLine();  return true }
+            if cmd      && char == "l" { handleSelectLine();     return true }
+            if cmd      && key  == 44  { handleToggleComment();  return true } // ⌘/
+            if cmd      && key  == 30  { handleIndent();         return true } // ⌘]
+            if cmd      && key  == 33  { handleOutdent();        return true } // ⌘[
+            if cmdShift && char == "v" { handlePastePlainText(); return true }
+
+            // Move line (⌥↑ / ⌥↓)
+            if opt && key == 126 { handleMoveLineUp();   return true }
+            if opt && key == 125 { handleMoveLineDown(); return true }
+
+            // ⌘↩ — toggle task checkbox
+            if cmd && key == 36 { toggleTaskAtCursor(); return true }
+
             return false
         }
 
